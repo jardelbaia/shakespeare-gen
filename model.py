@@ -10,7 +10,7 @@ def split_input_target(chunk):
     return input_text, target_text
 
 # ---------------------------------------------------------------------------------------------------------- #
-# Creates Recurrent Neural (LSTM) Net model																	 #
+# Creates Recurrent Neural Net (LSTM) model																	 #
 # ---------------------------------------------------------------------------------------------------------- #
 def create_model(vocab_size, embedding_dim, rnn_units, batch_size):
   model = tf.keras.Sequential([
