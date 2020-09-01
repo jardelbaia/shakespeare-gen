@@ -1,10 +1,8 @@
 import tensorflow as tf
 import numpy as np
-from params import *
-from model import *
+from GetFun import get_vocab,split_input_target
 
 tf.enable_eager_execution()
-
 #download and open file
 file = tf.keras.utils.get_file('shakespeare.txt', 'https://storage.googleapis.com/download.tensorflow.org/data/shakespeare.txt')
 text = open(file, 'rb').read().decode(encoding='utf-8')
@@ -17,20 +15,13 @@ char_to_index = {u:i for i,u in enumerate(vocab)}
 index_to_char = np.array(vocab)
 
 #text to int and slice to get sequences
+seq_length = 100
 int_text = [char_to_index[char] for char in text]
 sliced = tf.data.Dataset.from_tensor_slices(int_text)
 sequences = sliced.batch(seq_length+1, drop_remainder=True)
 
 #creates input and targets 
+BUFFER_SIZE = 10000
+BATCH_SIZE = 64
 dataset = sequences.map(split_input_target)
 dataset = dataset.shuffle(BUFFER_SIZE).batch(BATCH_SIZE, drop_remainder=True)
-
-#creates model
-model = create_model(vocab_size,embedding_dim,rnn_units,BATCH_SIZE)
-model.compile(optimizer='adam',loss=loss)
-
-#start training
-history = model.fit(dataset, epochs=EPOCHS)
-
-#save model
-model.save('models/shakespeare_model.h5')
